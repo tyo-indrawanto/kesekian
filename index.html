@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark" data-accent="amber">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="Pelacak beban, repetisi, dan progres gym offline untuk program tambah massa otot dan diet." />
+  <title>LiftLog — Pelacak Gym Offline</title>
+
+  <!-- Konfigurasi PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header Utama -->
+    <header class="top-header" role="banner">
+      <div class="brand-group">
+        <span class="brand-icon" aria-hidden="true">
+          <!-- Ikon Dumbbell -->
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6.5 6.5v11" />
+            <path d="M17.5 6.5v11" />
+            <path d="M4 9v6" />
+            <path d="M20 9v6" />
+            <path d="M6.5 12h11" />
+            <path d="M2 10.5v3" />
+            <path d="M22 10.5v3" />
+          </svg>
+        </span>
+        <div>
+          <h1 class="app-title">LiftLog</h1>
+          <p id="active-session-date" class="session-subtitle">Senin, 23 Nov 2026</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Toggle Tujuan: Massa Otot / Diet -->
+        <button
+          type="button"
+          id="goal-toggle-btn"
+          class="chip-btn goal-badge"
+          aria-label="Ganti tujuan program latihan"
+          title="Ganti tujuan program"
+        >
+          <span id="goal-label">Massa Otot</span>
+        </button>
+
+        <!-- Tombol Variasi Warna Aksen -->
+        <button
+          type="button"
+          id="accent-cycle-btn"
+          class="icon-btn"
+          aria-label="Ganti variasi warna aksen"
+          title="Ganti warna aksen"
+        >
+          <!-- Ikon Palette -->
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+          </svg>
+        </button>
+
+        <!-- Toggle Mode Gelap / Terang -->
+        <button
+          type="button"
+          id="theme-toggle-btn"
+          class="icon-btn"
+          aria-label="Ganti mode terang atau gelap"
+          title="Ganti mode gelap/terang"
+        >
+          <!-- Ikon Sun / Moon -->
+          <svg id="theme-icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+          <svg id="theme-icon-sun" class="hidden" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Konten Utama -->
+    <main class="main-content" role="main">
+      <!-- TAB 1: LATIHAN HARI INI -->
+      <section id="view-workout" class="tab-panel active" aria-labelledby="nav-workout">
+        <!-- Ringkasan Cepat Sesi -->
+        <section class="stats-strip" aria-label="Ringkasan sesi latihan">
+          <article class="stat-card">
+            <span class="stat-label">Volume Sesi</span>
+            <strong id="session-volume" class="stat-value">0 kg</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Total Set</span>
+            <strong id="session-sets-count" class="stat-value">0</strong>
+          </article>
+          <article class="stat-card">
+            <span id="goal-metric-label" class="stat-label">Fokus PR</span>
+            <strong id="goal-metric-value" class="stat-value">0 kg</strong>
+          </article>
+        </section>
+
+        <!-- Rest Timer Antar-Set -->
+        <section class="timer-card" aria-label="Timer istirahat antar set">
+          <div class="timer-info">
+            <span class="timer-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 22h14" />
+                <path d="M5 2h14" />
+                <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
+                <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />
+              </svg>
+            </span>
+            <div>
+              <span class="timer-label">Rest Timer</span>
+              <strong id="timer-display" class="timer-clock">01:30</strong>
+            </div>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="mini-btn" data-timer-preset="60">60d</button>
+            <button type="button" class="mini-btn" data-timer-preset="90">90d</button>
+            <button type="button" class="mini-btn" data-timer-preset="150">150d</button>
+            <button type="button" id="timer-start-btn" class="primary-sm-btn">Mulai</button>
+            <button type="button" id="timer-reset-btn" class="ghost-sm-btn" aria-label="Reset timer">Reset</button>
+          </div>
+        </section>
+
+        <!-- Form Input Beban & Repetisi -->
+        <section class="card form-card" aria-labelledby="form-heading">
+          <div class="card-header-row">
+            <h2 id="form-heading" class="section-title">Input Hasil Set</h2>
+            <button type="button" id="repeat-last-btn" class="link-btn">Ulangi Sesi Lalu</button>
+          </div>
+
+          <form id="set-form" novalidate>
+            <div class="form-row-2">
+              <div class="field-group">
+                <label for="muscle-group">Kelompok Otot</label>
+                <select id="muscle-group" name="muscleGroup">
+                  <option value="Dada">Dada</option>
+                  <option value="Punggung">Punggung</option>
+                  <option value="Kaki">Kaki</option>
+                  <option value="Bahu">Bahu</option>
+                  <option value="Lengan">Lengan</option>
+                  <option value="Inti / Core">Inti / Core</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <label for="exercise-name">Nama Gerakan</label>
+                <input
+                  type="text"
+                  id="exercise-name"
+                  name="exerciseName"
+                  list="exercise-suggestions"
+                  placeholder="cth: Bench Press"
+                  required
+                />
+                <datalist id="exercise-suggestions"></datalist>
+              </div>
+            </div>
+
+            <!-- Info Referensi Terakhir (Smart Prefill) -->
+            <div id="last-performance-hint" class="prefill-banner hidden">
+              <span id="last-performance-text">Terakhir: 60 kg × 10 reps</span>
+              <button type="button" id="apply-prefill-btn" class="chip-btn">Isi Otomatis</button>
+            </div>
+
+            <!-- Input Beban -->
+            <div class="field-group">
+              <div class="label-with-quick">
+                <label for="weight-input">Beban (kg)</label>
+                <div class="quick-adjust-group">
+                  <button type="button" class="adj-btn" data-target="weight-input" data-delta="-2.5">-2.5</button>
+                  <button type="button" class="adj-btn" data-target="weight-input" data-delta="2.5">+2.5</button>
+                  <button type="button" class="adj-btn" data-target="weight-input" data-delta="5">+5</button>
+                </div>
+              </div>
+              <input
+                type="number"
+                id="weight-input"
+                name="weight"
+                step="0.5"
+                min="0"
+                inputmode="decimal"
+                placeholder="0"
+                required
+              />
+            </div>
+
+            <!-- Input Repetisi -->
+            <div class="field-group">
+              <div class="label-with-quick">
+                <label for="reps-input">Repetisi Berhasil</label>
+                <div class="quick-adjust-group">
+                  <button type="button" class="adj-btn" data-target="reps-input" data-delta="-1">-1</button>
+                  <button type="button" class="adj-btn" data-target="reps-input" data-delta="1">+1</button>
+                  <button type="button" class="adj-btn" data-target="reps-input" data-delta="2">+2</button>
+                </div>
+              </div>
+              <input
+                type="number"
+                id="reps-input"
+                name="reps"
+                step="1"
+                min="1"
+                inputmode="numeric"
+                placeholder="0"
+                required
+              />
+            </div>
+
+            <!-- Indikator RIR / Intensitas Opsional -->
+            <div class="field-group">
+              <label for="rir-select">Intensitas / Sisa Repetisi (RIR - Opsional)</label>
+              <select id="rir-select" name="rir">
+                <option value="">Tidak ditandai</option>
+                <option value="RIR 0 (Maksimal / Failure)">RIR 0 — Mentok / Failure</option>
+                <option value="RIR 1 (Sisa 1 rep)">RIR 1 — Sisa 1 repetisi</option>
+                <option value="RIR 2 (Sisa 2 rep)">RIR 2 — Sisa 2 repetisi</option>
+                <option value="RIR 3+ (Terkendali)">RIR 3+ — Terkendali / Teknik</option>
+              </select>
+            </div>
+
+            <button type="submit" id="save-set-btn" class="primary-btn">
+              <span aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="M12 5v14" />
+                </svg>
+              </span>
+              Simpan Set Latihan
+            </button>
+          </form>
+        </section>
+
+        <!-- Daftar Set Tersimpan pada Sesi Ini -->
+        <section class="card" aria-labelledby="logged-sets-heading">
+          <div class="card-header-row">
+            <h2 id="logged-sets-heading" class="section-title">Log Set Hari Ini</h2>
+            <button type="button" id="finish-session-btn" class="secondary-sm-btn">Simpan Sesi</button>
+          </div>
+          <div id="today-sets-container" class="sets-list">
+            <p class="empty-state">Belum ada set yang diinput hari ini. Mulai catat beban dan repetisimu di atas.</p>
+          </div>
+        </section>
+
+        <!-- Catatan Sesi & Berat Badan Opsional -->
+        <section class="card" aria-labelledby="checkin-heading">
+          <h2 id="checkin-heading" class="section-title">Catatan Sesi &amp; Berat Badan</h2>
+          <div class="form-row-2">
+            <div class="field-group">
+              <label for="body-weight-input">Berat Badan (kg - Opsional)</label>
+              <input
+                type="number"
+                id="body-weight-input"
+                step="0.1"
+                min="20"
+                max="300"
+                inputmode="decimal"
+                placeholder="cth: 68.5"
+              />
+            </div>
+            <div class="field-group">
+              <label for="session-note-input">Catatan Kondisi / Energi</label>
+              <input
+                type="text"
+                id="session-note-input"
+                placeholder="cth: Tidur cukup, fokus diet"
+              />
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- TAB 2: RIWAYAT & PROGRES -->
+      <section id="view-progress" class="tab-panel" aria-labelledby="nav-progress">
+        <section class="card" aria-labelledby="muscle-volume-heading">
+          <h2 id="muscle-volume-heading" class="section-title">Volume Beban per Kelompok Otot</h2>
+          <p class="section-desc">Akumulasi beban × repetisi dari data tersimpan di perangkat ini.</p>
+          <div id="muscle-breakdown-list" class="breakdown-list">
+            <p class="empty-state">Data kelompok otot akan muncul setelah ada latihan tersimpan.</p>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="exercise-progress-heading">
+          <div class="card-header-row">
+            <h2 id="exercise-progress-heading" class="section-title">Riwayat per Gerakan</h2>
+            <select id="filter-exercise-select" aria-label="Pilih gerakan untuk melihat riwayat">
+              <option value="ALL">Semua Gerakan</option>
+            </select>
+          </div>
+          <div id="history-log-container" class="history-list">
+            <p class="empty-state">Belum ada riwayat latihan tersimpan.</p>
+          </div>
+        </section>
+      </section>
+
+      <!-- TAB 3: PENGATURAN & DATA LOKAL -->
+      <section id="view-settings" class="tab-panel" aria-labelledby="nav-settings">
+        <section class="card" aria-labelledby="appearance-heading">
+          <h2 id="appearance-heading" class="section-title">Tampilan &amp; Variasi Warna</h2>
+          <p class="section-desc">Sesuaikan kenyamanan layar dan warna aksen sesuai programmu.</p>
+
+          <div class="field-group">
+            <label>Mode Layar</label>
+            <div class="segmented-group">
+              <button type="button" class="seg-btn" data-set-theme="dark">Mode Gelap</button>
+              <button type="button" class="seg-btn" data-set-theme="light">Mode Terang</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Variasi Warna Aksen</label>
+            <div class="accent-swatches" role="group" aria-label="Pilih warna aksen">
+              <button type="button" class="swatch-btn" data-set-accent="amber" aria-label="Aksen Energi Amber">
+                <span class="swatch-dot swatch-amber"></span>
+                <span>Amber</span>
+              </button>
+              <button type="button" class="swatch-btn" data-set-accent="emerald" aria-label="Aksen Diet Emerald">
+                <span class="swatch-dot swatch-emerald"></span>
+                <span>Emerald</span>
+              </button>
+              <button type="button" class="swatch-btn" data-set-accent="cobalt" aria-label="Aksen Progres Cobalt">
+                <span class="swatch-dot swatch-cobalt"></span>
+                <span>Cobalt</span>
+              </button>
+              <button type="button" class="swatch-btn" data-set-accent="coral" aria-label="Aksen Kekuatan Coral">
+                <span class="swatch-dot swatch-coral"></span>
+                <span>Coral</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="backup-heading">
+          <h2 id="backup-heading" class="section-title">Penyimpanan Lokal &amp; Cadangan Data</h2>
+          <p class="section-desc">
+            Seluruh data ters
