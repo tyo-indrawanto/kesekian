@@ -1,0 +1,89 @@
+/* ==========================================================================
+   1. BASE THEME VARIABLES (DARK MODE DEFAULT)
+   ========================================================================== */
+:root {
+  --bg-main: #0d1117;
+  --bg-header: rgba(13, 17, 23, 0.88);
+  --bg-card: #161b22;
+  --bg-elevated: #1f2630;
+  --bg-input: #0f141b;
+
+  --text-primary: #f0f6fc;
+  --text-secondary: #9aa5b4;
+
+  --border-subtle: rgba(240, 246, 252, 0.1);
+  --border-input: rgba(240, 246, 252, 0.16);
+
+  --shadow-card: 0 10px 24px rgba(0, 0, 0, 0.32);
+
+  /* Default Accent: Amber */
+  --accent-primary: #f59e0b;
+  --accent-soft: rgba(245, 158, 11, 0.15);
+  --accent-border: rgba(245, 158, 11, 0.42);
+  --text-on-accent: #111315;
+}
+
+/* ==========================================================================
+   2. LIGHT THEME OVERRIDES
+   ========================================================================== */
+html[data-theme="light"] {
+  --bg-main: #f4f6fa;
+  --bg-header: rgba(244, 246, 250, 0.9);
+  --bg-card: #ffffff;
+  --bg-elevated: #eef2f7;
+  --bg-input: #f8fafc;
+
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+
+  --border-subtle: rgba(17, 24, 39, 0.09);
+  --border-input: rgba(17, 24, 39, 0.18);
+
+  --shadow-card: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+/* ==========================================================================
+   3. ACCENT COLOR PALETTES
+   ========================================================================== */
+html[data-accent="amber"] {
+  --accent-primary: #f59e0b;
+  --accent-soft: rgba(245, 158, 11, 0.15);
+  --accent-border: rgba(245, 158, 11, 0.42);
+  --text-on-accent: #111315;
+}
+
+html[data-accent="emerald"] {
+  --accent-primary: #10b981;
+  --accent-soft: rgba(16, 185, 129, 0.15);
+  --accent-border: rgba(16, 185, 129, 0.42);
+  --text-on-accent: #062118;
+}
+
+html[data-accent="cobalt"] {
+  --accent-primary: #3b82f6;
+  --accent-soft: rgba(59, 130, 246, 0.15);
+  --accent-border: rgba(59, 130, 246, 0.42);
+  --text-on-accent: #ffffff;
+}
+
+html[data-accent="coral"] {
+  --accent-primary: #f43f5e;
+  --accent-soft: rgba(244, 63, 94, 0.15);
+  --accent-border: rgba(244, 63, 94, 0.42);
+  --text-on-accent: #ffffff;
+}
+
+/* ==========================================================================
+   4. GOAL MODE SUBTLE HINTS (MASSA OTOT VS. DIET)
+   ========================================================================== */
+html[data-goal="bulk"] #goalToggleBtn {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #f59e0b;
+}
+
+html[data-goal="cut"] #goalToggleBtn {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #10b981;
+}
